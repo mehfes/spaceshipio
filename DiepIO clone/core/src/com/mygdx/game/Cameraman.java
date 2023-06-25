@@ -5,9 +5,13 @@ import java.util.ArrayList;
 public class Cameraman {
 	private ArrayList<VisibleObject> visibleObjects = new ArrayList<VisibleObject>();
 	private Player PlayerToFollow;
+	private int cameraXRange;
+	private int cameraYRange;
 	
 	public Cameraman(Player p) {
 		PlayerToFollow = p;
+		cameraXRange = 50; 
+		cameraYRange = 80; 
 	}
 	
 	public void addVisibleObject(VisibleObject o) {
@@ -30,5 +34,9 @@ public class Cameraman {
 				obj.draw();
 			}
 		}
+	}
+	public void setCameraRange(int x, int y) {
+		cameraXRange = x;
+		cameraYRange = y;
 	}
 }
