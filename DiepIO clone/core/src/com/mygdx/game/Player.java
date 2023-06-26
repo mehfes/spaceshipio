@@ -5,6 +5,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+/*
+ * Note: the 2d physics (box2d) has been selected in project creation.
+ * Use that module when you are making collision detection, movement etc
+ * */
+
 public class Player extends Interactable implements VisibleObject{
 	int points = 0;
 	int level = 1;
@@ -16,7 +21,7 @@ public class Player extends Interactable implements VisibleObject{
 		sr = new ShapeRenderer();
 	}
 	
-	public void addPoints(int value) {
+	public void addPoints(int value) { //add <value> points to the player's xp bar
 		points += value;
 		updateScore();
 	}
@@ -32,6 +37,7 @@ public class Player extends Interactable implements VisibleObject{
 				level++;
 			}
 		}
+		//TODO: make this method update the xp bar visually.
 	}
 
 	@Override
@@ -43,13 +49,18 @@ public class Player extends Interactable implements VisibleObject{
 	}
 
 	@Override
-	public boolean onScreen(Player p) {
-		return p==this;
+	public boolean onScreen(Player p) { //returns whether this object is rendered on the screen
+		return true;
 	}
 
 	@Override
-	boolean dealsDamage() {
+	boolean dealsDamage() { //returns whether this object can deal damage when it collides with another "Interactable"
 		return true;
+	}
+	
+	public void PlayerUpdate() {
+		//the base method for all updates for the player (render,movement,attack,etc...)
+		
 	}
 	
 }

@@ -9,7 +9,7 @@ public abstract class Interactable implements VisibleObject{
 	ShapeRenderer sr;
 }
 
-class Square extends Interactable{
+class Square extends Interactable implements VisibleObject{
 	private int value = 20;
 	
 	@Override
@@ -32,4 +32,26 @@ class Square extends Interactable{
 		return false;
 	}
 
+}
+
+class Star extends Interactable implements VisibleObject{
+
+	@Override
+	public void draw() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean onScreen(Player p) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	boolean dealsDamage() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 }
