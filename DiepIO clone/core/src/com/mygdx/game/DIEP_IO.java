@@ -2,18 +2,81 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import java.util.ArrayList;
 
 public class DIEP_IO extends ApplicationAdapter {
 	ArrayList<Cameraman> CamArray;
 	ArrayList<Player> PlayerArray;
+	Square sq;
+	
+	//Input controls start
+	void moveUp(boolean b) {
+		PlayerArray.get(0).moveUp(b);
+	}
+	void moveLeft(boolean b) {
+		PlayerArray.get(0).moveLeft(b);
+	}
+	void moveDown(boolean b) {
+		PlayerArray.get(0).moveDown(b);
+	}
+	void moveRight(boolean b) {
+		PlayerArray.get(0).moveRight(b);
+	}
+	
+	
+	//Input controls end
+	
 	
 	@Override
 	public void create () {
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean keyDown(int keyCode){
+				switch(keyCode) {
+				case Keys.W:
+					moveUp(true);
+					break;
+				case Keys.A:
+					moveLeft(true);
+					break;
+				case Keys.S:
+					moveDown(true);
+					break;
+				case Keys.D:
+					moveRight(true);
+					break;
+				}
+				return true;
+			}
+			@Override
+			public boolean keyUp(int keyCode){
+				switch(keyCode) {
+				case Keys.W:
+					moveUp(false);
+					break;
+				case Keys.A:
+					moveLeft(false);
+					break;
+				case Keys.S:
+					moveDown(false);
+					break;
+				case Keys.D:
+					moveRight(false);
+					break;
+				}
+				return true;
+			}
+		});
+		
 		CamArray = new ArrayList<Cameraman>();
 		PlayerArray = new ArrayList<Player>();
 		AddPlayer(new Player());
+		sq = new Square();
+		CamArray.get(0).addVisibleObject(sq);
+		
 	}
 
 	@Override
@@ -36,6 +99,9 @@ public class DIEP_IO extends ApplicationAdapter {
 		Cameraman temp = new Cameraman(p);
 		CamArray.add(temp);
 		PlayerArray.add(p);
+	}
+	private void AddObject(VisibleObject o,Cameraman c) {
+		c.addVisibleObject(o);
 	}
 	
 }

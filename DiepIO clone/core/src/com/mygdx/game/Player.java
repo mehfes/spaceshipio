@@ -1,9 +1,9 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import java.util.ArrayList;
 
 /*
  * Note: the 2d physics (box2d) has been selected in project creation.
@@ -11,15 +11,45 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  * */
 
 public class Player extends Interactable implements VisibleObject{
-	int points = 0;
-	int level = 1;
-	int xCoordinate = 500;
-	int yCoordinate = 500;
+	private int points = 0;
+	private int level = 1;
+	private int xCoord = 500; //the coordinate of the player relative to the camera in pixels.
+	private int yCoord = 500;
+	private int radius = 50;
+	private int RotationDGR = 0;
+	private boolean Right = false;
+	private boolean Left = false;
+	private boolean Up = false;
+	private boolean Down = false;
+	private int speed = 1;
+	ArrayList<Barrel> Guns = new ArrayList<Barrel>();
 	
+	public int getX() {return xCoord;}
+	public int getY() {return yCoord;}
+	public int getRadius() {return radius;}
 	
 	public Player() {
 		sr = new ShapeRenderer();
+		Guns.add(new Barrel(this));
 	}
+	
+	//Player controller start
+	void moveUp(boolean b) {
+		Up = b;
+	}
+	void moveLeft(boolean b) {
+		Left = b;
+		RotationDGR+=5;
+	}
+	void moveDown(boolean b) {
+		Down = b;
+	}
+	void moveRight(boolean b) {
+		Right = b;
+		RotationDGR-=5;
+	}
+	//Player controller end
+	
 	
 	public void addPoints(int value) { //add <value> points to the player's xp bar
 		points += value;
@@ -41,15 +71,15 @@ public class Player extends Interactable implements VisibleObject{
 	}
 
 	@Override
-	public void draw() {
+	public void draw() { //do not use this method for drawing the player. usee drawAtCoordinate() instead.
 		sr.begin(ShapeType.Filled);
-		sr.setColor(new Color(.25f,.7f,.9f,1));
-		sr.circle(Gdx.graphics.getWidth()/2+25,Gdx.graphics.getHeight()/2-25,50);
+		sr.setColor(.25f,.7f,.9f,1);
+		sr.circle(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2,50);
 		sr.end();
 	}
 
 	@Override
-	public boolean onScreen(Player p) { //returns whether this object is rendered on the screen
+	public boolean onScreen(Cameraman c) { //returns whether this object is rendered on the screen
 		return true;
 	}
 
@@ -60,7 +90,80 @@ public class Player extends Interactable implements VisibleObject{
 	
 	public void PlayerUpdate() {
 		//the base method for all updates for the player (render,movement,attack,etc...)
+		if(Up&&!Down) {
+			yCoord += speed;
+		}
+		if(Down&&!Up) {
+			yCoord -= speed;
+		}
+		if(Left&&!Right) {
+			xCoord -= speed;
+		}
+		if(Right&&!Left) {
+			xCoord += speed;
+		}
+		
+		for(Barrel theBarrel:Guns) {
+			theBarrel.draw();
+		}
 		
 	}
 	
+	@Override
+	public void drawAtCoordinate(int scrRelX,int scrRelY,int RotationDGR) {
+		sr.begin(ShapeType.Filled);
+		sr.setColor(.25f,.7f,.9f,1);
+		sr.circle(scrRelX,scrRelY,radius);
+		sr.end();
+	}
+	@Override
+	public int getRotationDGR() {
+		return RotationDGR;
+	}
+	public float getCenterX() {
+		return xCoord;
+	}
+	public int getCenterY() {
+		return yCoord;
+	}
+	
 }
+
+class Barrel{ //aka GUN
+	Cameraman myCamera;
+	Player myPlayer;
+	ShapeRenderer sr;
+	private int width = 20;
+	private int height = 60;
+	
+	
+	public Barrel(Player p) {
+		sr = new ShapeRenderer();
+		myPlayer = p;
+	}
+	
+	public void draw() {
+		sr.begin(ShapeType.Filled);
+		sr.setColor(.5f, .5f, .5f, 1);
+		sr.rect(Gdx.graphics.getWidth()/2+myPlayer.getRadius()-2,(Gdx.graphics.getHeight()/2)-(width/2),-myPlayer.getRadius()+2,width/2,height,width,1,1,myPlayer.getRotationDGR());
+		sr.end();
+	}
+	
+	public void draw(Player p) {
+		sr.begin(ShapeType.Filled);
+		sr.setColor(.5f, .5f, .5f, 1);
+		sr.rect(p.getX()+p.getRadius()-1,p.getY()+(p.getRadius()),p.getCenterX(),p.getCenterY(),height,width,1,1,p.getRotationDGR());
+		sr.end();
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+

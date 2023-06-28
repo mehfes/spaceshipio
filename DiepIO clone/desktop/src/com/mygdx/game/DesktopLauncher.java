@@ -8,7 +8,7 @@ import com.mygdx.game.DIEP_IO;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setWindowedMode(1000,1000);
+		config.setWindowedMode(800,800);
 		config.setResizable(false);
 		config.setForegroundFPS(60);
 		config.setTitle("Diep IO clone");

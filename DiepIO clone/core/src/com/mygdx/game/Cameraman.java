@@ -5,20 +5,22 @@ import java.util.ArrayList;
 public class Cameraman {
 	private ArrayList<VisibleObject> visibleObjects = new ArrayList<VisibleObject>();
 	private Player PlayerToFollow;
-	
+	private int centerX,centerY;
 	
 	//the position of this Cameraman relative to the map in gameUnits (bottom left corner coords)
-	private int xPos;
-	private int yPos;
+	private int xPos = 0;
+	private int yPos = 0;
 	
 	//1 gameUnit == 5px (subject to change)
-	private int cameraXRange; //the horizontal range of the camera in gameUnits
-	private int cameraYRange; //the vertical range of the camera in gameUnits
+	private int width; //the horizontal range of the camera in gameUnits
+	private int height; //the vertical range of the camera in gameUnits
 	
 	public Cameraman(Player p) {
 		PlayerToFollow = p;
-		cameraXRange = 50;
-		cameraYRange = 80;
+		width = 800;
+		height = 800;
+		centerX = 400;
+		centerY = 400;
 	}
 	
 	public void addVisibleObject(VisibleObject o) { //call this method whenever an object enters the range of this cameraman.
@@ -28,7 +30,7 @@ public class Cameraman {
 	private void updateVisibilityList() { //this method is called to remove objects that are no longer in range of this cameraman.
 		ArrayList<VisibleObject> tempArr = new ArrayList<VisibleObject>();
 		for(VisibleObject o:visibleObjects) {
-			if(!o.onScreen(PlayerToFollow))
+			if(!o.onScreen(this))
 				tempArr.add(o);
 		}
 		for(VisibleObject v:tempArr) {visibleObjects.remove(v);}
@@ -36,17 +38,25 @@ public class Cameraman {
 	}
 	
 	private void render() { //calls the draw() method of each object tagged as visible.
-		PlayerToFollow.draw();
 		for(VisibleObject obj:visibleObjects) {
-			if(obj.onScreen(PlayerToFollow)) {
-				obj.draw();
+			if(obj.onScreen(this)) {
+				obj.drawAtCoordinate(calculateRel1(obj),calculateRel2(obj),obj.getRotationDGR());
 			}
 		}
+	}
+	
+	private int calculateRel1(VisibleObject o) { //returns the x coordinate in screen coords
+		return xPos+width-o.getX();
+	}
+	
+	private int calculateRel2(VisibleObject o) {
+		return yPos+height-o.getY();
 	}
 	
 	public void CameraUpdate() { //use this method externally for updating the camera
 		updateVisibilityList();
 		render();
+		PlayerToFollow.draw();
 	}
 	
 	public void CameraUpdate(ArrayList<VisibleObject> arr) { //overload method for whenever there are new objects to render
@@ -57,11 +67,24 @@ public class Cameraman {
 	public void setCameraRange(int x, int y) {
 		// TODO: remove this method (or make it private) unless the camera is meant to be resizable
 		// and if it is resizable, write a comment here to explain
-		cameraXRange = x;
-		cameraYRange = y;
+		width = x;
+		height = y;
 	}
 
 	public Player getPlayer() { //returns the Player object this Cameraman is following.
 		return PlayerToFollow;
+	}
+
+	public int getX() {
+		return xPos;
+	}
+	public int getY() {
+		return yPos;
+	}
+	public int getWidth() {
+		return width;
+	}
+	public int getHeight() {
+		return height;
 	}
 }
