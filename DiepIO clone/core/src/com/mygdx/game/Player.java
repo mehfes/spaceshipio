@@ -22,6 +22,7 @@ public class Player extends Interactable implements VisibleObject{
 	private boolean Up = false;
 	private boolean Down = false;
 	private int speed = 1;
+	Cameraman myCamera;
 	ArrayList<Barrel> Guns = new ArrayList<Barrel>();
 	
 	public int getX() {return xCoord;}
@@ -31,6 +32,10 @@ public class Player extends Interactable implements VisibleObject{
 	public Player() {
 		sr = new ShapeRenderer();
 		Guns.add(new Barrel(this));
+	}
+	
+	public void setCamera(Cameraman cam) {
+		myCamera = cam;
 	}
 	
 	//Player controller start
@@ -107,6 +112,8 @@ public class Player extends Interactable implements VisibleObject{
 			theBarrel.draw();
 		}
 		
+		myCamera.setCoordinate(this.xCoord-myCamera.getWidth()/2,this.yCoord-myCamera.getHeight()/2);
+		
 	}
 	
 	@Override
@@ -125,6 +132,9 @@ public class Player extends Interactable implements VisibleObject{
 	}
 	public int getCenterY() {
 		return yCoord;
+	}
+	public void setRotation(float f) {
+		RotationDGR = (int)(f*(360/(2*Math.PI)));
 	}
 	
 }

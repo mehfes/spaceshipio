@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Cameraman {
 	private ArrayList<VisibleObject> visibleObjects = new ArrayList<VisibleObject>();
 	private Player PlayerToFollow;
-	private int centerX,centerY;
 	
 	//the position of this Cameraman relative to the map in gameUnits (bottom left corner coords)
 	private int xPos = 0;
@@ -19,8 +18,6 @@ public class Cameraman {
 		PlayerToFollow = p;
 		width = 800;
 		height = 800;
-		centerX = 400;
-		centerY = 400;
 	}
 	
 	public void addVisibleObject(VisibleObject o) { //call this method whenever an object enters the range of this cameraman.
@@ -45,12 +42,17 @@ public class Cameraman {
 		}
 	}
 	
+	public void setCoordinate(int x,int y) {
+		xPos = x;
+		yPos = y;
+	}
+	
 	private int calculateRel1(VisibleObject o) { //returns the x coordinate in screen coords
-		return xPos+width-o.getX();
+		return o.getX()-xPos;
 	}
 	
 	private int calculateRel2(VisibleObject o) {
-		return yPos+height-o.getY();
+		return o.getY()-yPos;
 	}
 	
 	public void CameraUpdate() { //use this method externally for updating the camera

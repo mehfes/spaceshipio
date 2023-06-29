@@ -11,6 +11,7 @@ public class DIEP_IO extends ApplicationAdapter {
 	ArrayList<Cameraman> CamArray;
 	ArrayList<Player> PlayerArray;
 	Square sq;
+	PolarCoordinates mousePosAngle;
 	
 	//Input controls start
 	void moveUp(boolean b) {
@@ -32,6 +33,14 @@ public class DIEP_IO extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		mousePosAngle = new PolarCoordinates();
+		
+		CamArray = new ArrayList<Cameraman>();
+		PlayerArray = new ArrayList<Player>();
+		AddPlayer(new Player());
+		sq = new Square();
+		CamArray.get(0).addVisibleObject(sq);
+		
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean keyDown(int keyCode){
@@ -69,13 +78,16 @@ public class DIEP_IO extends ApplicationAdapter {
 				}
 				return true;
 			}
+			
+			@Override
+			public boolean mouseMoved(int screenX,int screenY) {
+				mousePosAngle.setCartesian(screenX-CamArray.get(0).getWidth()/2,CamArray.get(0).getHeight()/2-(screenY));
+				PlayerArray.get(0).setRotation((float)mousePosAngle.getPolar()[0]);
+				return true;
+			}
 		});
 		
-		CamArray = new ArrayList<Cameraman>();
-		PlayerArray = new ArrayList<Player>();
-		AddPlayer(new Player());
-		sq = new Square();
-		CamArray.get(0).addVisibleObject(sq);
+		
 		
 	}
 
@@ -98,8 +110,10 @@ public class DIEP_IO extends ApplicationAdapter {
 	private void AddPlayer(Player p) {
 		Cameraman temp = new Cameraman(p);
 		CamArray.add(temp);
+		p.setCamera(temp);
 		PlayerArray.add(p);
 	}
+	
 	private void AddObject(VisibleObject o,Cameraman c) {
 		c.addVisibleObject(o);
 	}
